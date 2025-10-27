@@ -30,4 +30,9 @@ A resposta `201 Created` confirma que a conta foi registada com a permissão de 
 2. Autentique-se com o e-mail e palavra-passe definidos para o administrador.
 3. Após o login, será redireccionado para `/painel`, onde poderá gerir todas as solicitações dos clientes.
 
-> **Nota:** Administradores conseguem visualizar e acompanhar cada pedido, mas a criação de novas solicitações é exclusiva dos clientes.
+## Operações administrativas no painel
+- Utilize o selector de estado na coluna "Acções" para promover cada solicitação entre as fases **Novo**, **Em análise**, **Em
+  progresso** e **Concluído**.
+- As alterações de estado são gravadas imediatamente e ficam registadas no histórico do cliente.
+- Mensagens de confirmação ou erro aparecem no painel lateral, facilitando a conferência das últimas acções.
+- Administradores mantêm a visibilidade de todos os pedidos, mas a criação de novas solicitações continua exclusiva dos clientes logados.

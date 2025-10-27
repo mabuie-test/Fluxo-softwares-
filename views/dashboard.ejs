@@ -5,9 +5,17 @@
         <div class="dashboard-header">
           <div>
             <span class="eyebrow">Olá, <%= currentUser.name %></span>
-            <h1>Gerencie as suas solicitações e acompanhe cada etapa.</h1>
+            <h1>
+              <% if (isAdmin) { %>
+              Acompanhe e evolua as solicitações da Fluxo Softwares.
+              <% } else { %>
+              Gerencie as suas solicitações e acompanhe cada etapa.
+              <% } %>
+            </h1>
           </div>
+          <% if (!isAdmin) { %>
           <a class="button button-outline" href="/contacto">Abrir um novo projecto estratégico</a>
+          <% } %>
         </div>
 
         <div class="stats-grid">
@@ -35,6 +43,27 @@
 
         <div class="dashboard-columns">
           <section class="dashboard-form">
+            <% if (isAdmin) { %>
+            <h2>Gestão administrativa</h2>
+            <p>
+              Utilize o painel ao lado para actualizar o estado de cada solicitação e mantenha a equipa alinhada ao
+              progresso real dos projectos.
+            </p>
+            <% if (adminStatusFlash) { %>
+            <div class="alert <%= adminStatusFlash.type === 'success' ? 'alert-success' : 'alert-error' %>">
+              <%= adminStatusFlash.message %>
+            </div>
+            <% } %>
+            <div class="admin-tips">
+              <h3>Fluxo recomendado</h3>
+              <ul>
+                <li><strong>Novo</strong> — entrada inicial aguardando triagem.</li>
+                <li><strong>Em análise</strong> — requisitos a serem afinados com o cliente.</li>
+                <li><strong>Em progresso</strong> — execução em curso pela equipa técnica.</li>
+                <li><strong>Concluído</strong> — projecto finalizado e entregue.</li>
+              </ul>
+            </div>
+            <% } else { %>
             <h2>Novo pedido</h2>
             <p>Descreva a sua necessidade para activarmos o time ideal.</p>
             <% if (success) { %>
@@ -73,6 +102,7 @@
               </div>
               <button type="submit" class="button button-primary">Enviar solicitação</button>
             </form>
+            <% } %>
           </section>
           <section class="dashboard-list">
             <h2>Histórico de solicitações</h2>
@@ -83,19 +113,44 @@
               <table>
                 <thead>
                   <tr>
+                    <% if (isAdmin) { %>
+                    <th>Cliente</th>
+                    <% } %>
                     <th>Tipo</th>
                     <th>Detalhes</th>
                     <th>Status</th>
                     <th>Enviado em</th>
+                    <% if (isAdmin) { %>
+                    <th>Acções</th>
+                    <% } %>
                   </tr>
                 </thead>
                 <tbody>
                   <% requests.forEach((request) => { %>
                   <tr>
+                    <% if (isAdmin) { %>
+                    <td class="request-origin">
+                      <strong><%= request.client ? request.client.name : request.contactName %></strong>
+                      <span><%= request.client ? request.client.email : request.contactEmail %></span>
+                    </td>
+                    <% } %>
                     <td><%= request.serviceInterest %></td>
                     <td><%= request.details %></td>
                     <td><span class="status-pill status-<%= request.status.toLowerCase().replace(' ', '-') %>"><%= request.status %></span></td>
                     <td><%= new Date(request.createdAt).toLocaleDateString('pt-PT') %></td>
+                    <% if (isAdmin) { %>
+                    <td>
+                      <form action="/solicitacoes/<%= request.id %>/status" method="post" class="admin-status-form">
+                        <label class="sr-only" for="status-<%= request.id %>">Actualizar estado</label>
+                        <select id="status-<%= request.id %>" name="status" class="status-select">
+                          <% statusOptions.forEach((option) => { %>
+                          <option value="<%= option %>" <%= request.status === option ? 'selected' : '' %>><%= option %></option>
+                          <% }) %>
+                        </select>
+                        <button type="submit" class="button button-secondary button-compact">Actualizar</button>
+                      </form>
+                    </td>
+                    <% } %>
                   </tr>
                   <% }) %>
                 </tbody>
