@@ -1,0 +1,44 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+    <main class="auth-page section">
+      <div class="container auth-grid">
+        <div class="auth-info">
+          <span class="eyebrow">Área do Cliente</span>
+          <h1>Transforme ideias em solicitações acompanhadas em tempo real.</h1>
+          <p>
+            Acompanhe o progresso dos seus projectos, visualize métricas, interaja com a nossa equipa e receba updates
+            em tempo real.
+          </p>
+          <ul class="auth-benefits">
+            <li>Relatórios semanais e timeline visual</li>
+            <li>Chat com especialistas Fluxo</li>
+            <li>Roadmap com as próximas entregas</li>
+          </ul>
+          <a href="/registo" class="button button-outline">Ainda não tem conta? Registe-se</a>
+        </div>
+        <div class="auth-card">
+          <h2>Entrar</h2>
+          <% if (errors.length) { %>
+          <div class="alert alert-error">
+            <ul>
+              <% errors.forEach((error) => { %>
+              <li><%= error.msg %></li>
+              <% }) %>
+            </ul>
+          </div>
+          <% } %>
+          <form action="/login" method="post" class="form">
+            <div class="form-group">
+              <label for="email">E-mail</label>
+              <input type="email" id="email" name="email" value="<%= formData.email || '' %>" required />
+            </div>
+            <div class="form-group">
+              <label for="password">Palavra-passe</label>
+              <input type="password" id="password" name="password" required />
+            </div>
+            <button type="submit" class="button button-primary">Entrar</button>
+          </form>
+        </div>
+      </div>
+    </main>
+<%- include('partials/footer') %>

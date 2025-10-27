@@ -1,0 +1,33 @@
+    <header class="site-header">
+      <div class="container">
+        <div class="brand-area">
+          <a href="/" class="brand">
+            <img src="/assets/logo-light.svg" alt="Fluxo Softwares" class="brand-logo" />
+            <span class="brand-text">Fluxo Softwares</span>
+          </a>
+          <button class="menu-toggle" aria-expanded="false" aria-controls="main-navigation">
+            <span class="sr-only">Abrir menu</span>
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+        <nav id="main-navigation" class="site-nav">
+          <ul>
+            <li><a href="/#servicos">Serviços</a></li>
+            <li><a href="/#metodologia">Metodologia</a></li>
+            <li><a href="/#portfolio">Portefólio</a></li>
+            <li><a href="/contacto">Contacto</a></li>
+            <% if (isAuthenticated) { %>
+            <li><a class="button button-secondary" href="/painel">Painel</a></li>
+            <li>
+              <form action="/logout" method="post">
+                <button class="button button-link">Sair</button>
+              </form>
+            </li>
+            <% } else { %>
+            <li><a class="button button-secondary" href="/login">Área do Cliente</a></li>
+            <li><a class="button button-primary" href="/registo">Criar Conta</a></li>
+            <% } %>
+          </ul>
+        </nav>
+      </div>
+    </header>

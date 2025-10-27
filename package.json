@@ -1,0 +1,31 @@
+{
+  "name": "fluxo-softwares",
+  "version": "2.0.0",
+  "description": "Fluxo Softwares marketing website with customer portal built on Node.js and MongoDB",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "fluxo",
+    "marketing",
+    "express",
+    "mongodb"
+  ],
+  "author": "Fluxo Softwares",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.19.2",
+    "express-session": "^1.17.3",
+    "express-validator": "^7.0.1",
+    "mongoose": "^7.6.3",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}

@@ -1,0 +1,75 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+    <main class="section contact-section">
+      <div class="container contact-grid">
+        <div>
+          <span class="eyebrow">Contacto directo</span>
+          <h1>Conte-nos sobre o seu próximo projecto.</h1>
+          <p>
+            Preencha o formulário ao lado e a nossa equipa retorna em menos de 24 horas com um plano personalizado.
+            Prefere falar agora? Ligue para <a href="tel:+258840000000">+258 84 000 0000</a> ou envie WhatsApp.
+          </p>
+          <div class="contact-cards">
+            <div class="contact-card">
+              <h3>Suporte comercial</h3>
+              <p>Propostas, parcerias e solicitações corporativas.</p>
+              <a href="mailto:negocios@fluxosoftwares.com">negocios@fluxosoftwares.com</a>
+            </div>
+            <div class="contact-card">
+              <h3>Suporte técnico</h3>
+              <p>Clientes activos podem abrir tickets 24/7 na área do cliente.</p>
+              <a href="/login" class="button button-outline">Entrar no painel</a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-form-card">
+          <h2>Enviar mensagem</h2>
+          <% if (success) { %>
+          <div class="alert alert-success">Recebemos a sua mensagem! Em breve entraremos em contacto.</div>
+          <% } %>
+          <% if (errors.length) { %>
+          <div class="alert alert-error">
+            <p>Revise os campos marcados abaixo:</p>
+            <ul>
+              <% errors.forEach((error) => { %>
+              <li><%= error.msg %></li>
+              <% }) %>
+            </ul>
+          </div>
+          <% } %>
+          <form action="/contacto" method="post" class="form">
+            <div class="form-group">
+              <label for="contactName">Nome completo</label>
+              <input type="text" id="contactName" name="contactName" value="<%= formData.contactName || '' %>" required />
+            </div>
+            <div class="form-group">
+              <label for="contactEmail">E-mail</label>
+              <input type="email" id="contactEmail" name="contactEmail" value="<%= formData.contactEmail || '' %>" required />
+            </div>
+            <div class="form-group">
+              <label for="phone">Telefone</label>
+              <input type="text" id="phone" name="phone" value="<%= formData.phone || '' %>" />
+            </div>
+            <div class="form-group">
+              <label for="serviceInterest">Tema de interesse</label>
+              <select id="serviceInterest" name="serviceInterest" required>
+                <option value="">Seleccione uma opção</option>
+                <option value="marketing" <%= formData.serviceInterest === 'marketing' ? 'selected' : '' %>>Marketing digital</option>
+                <option value="web" <%= formData.serviceInterest === 'web' ? 'selected' : '' %>>Desenvolvimento web</option>
+                <option value="apps" <%= formData.serviceInterest === 'apps' ? 'selected' : '' %>>Aplicações mobile</option>
+                <option value="iot" <%= formData.serviceInterest === 'iot' ? 'selected' : '' %>>IoT &amp; Electrónica</option>
+                <option value="seguranca" <%= formData.serviceInterest === 'seguranca' ? 'selected' : '' %>>Segurança electrónica</option>
+                <option value="consultoria" <%= formData.serviceInterest === 'consultoria' ? 'selected' : '' %>>Consultoria</option>
+                <option value="outro" <%= formData.serviceInterest === 'outro' ? 'selected' : '' %>>Outro</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="details">Explique o desafio</label>
+              <textarea id="details" name="details" rows="5" required><%= formData.details || '' %></textarea>
+            </div>
+            <button type="submit" class="button button-primary">Enviar mensagem</button>
+          </form>
+        </div>
+      </div>
+    </main>
+<%- include('partials/footer') %>
