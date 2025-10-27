@@ -56,6 +56,7 @@ router.post(
         id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
       };
 
       const redirectTo = req.session.redirectTo || '/painel';
@@ -125,6 +126,7 @@ router.post(
         id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
       };
 
       return res.redirect('/painel');
@@ -142,5 +144,53 @@ router.post('/logout', (req, res, next) => {
     res.redirect('/');
   });
 });
+
+router.post(
+  '/admin/registo',
+  [
+    body('token')
+      .custom((value) => {
+        if (!process.env.ADMIN_SETUP_TOKEN) {
+          throw new Error('Token de configuração não está definido no servidor');
+        }
+        if (value !== process.env.ADMIN_SETUP_TOKEN) {
+          throw new Error('Token inválido');
+        }
+        return true;
+      })
+      .withMessage('Token inválido'),
+    body('name').trim().isLength({ min: 3 }).withMessage('Informe o nome do administrador'),
+    body('email').trim().isEmail().withMessage('E-mail inválido'),
+    body('password').isLength({ min: 12 }).withMessage('A palavra-passe deve ter pelo menos 12 caracteres'),
+  ],
+  async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const existingUser = await User.findOne({ email: req.body.email });
+      if (existingUser) {
+        return res.status(409).json({ errors: [{ msg: 'Já existe um utilizador com este e-mail' }] });
+      }
+
+      const hashedPassword = await bcrypt.hash(req.body.password, 12);
+
+      await User.create({
+        name: req.body.name,
+        email: req.body.email,
+        password: hashedPassword,
+        phone: req.body.phone,
+        role: 'admin',
+      });
+
+      return res.status(201).json({ message: 'Administrador registado com sucesso' });
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
 
 module.exports = router;

@@ -7,7 +7,10 @@ const router = express.Router();
 
 router.get('/painel', ensureAuth, async (req, res, next) => {
   try {
-    const requests = await Request.find({ client: req.session.user.id })
+    const isAdmin = req.session.user.role === 'admin';
+    const query = isAdmin ? {} : { client: req.session.user.id };
+
+    const requests = await Request.find(query)
       .sort({ createdAt: -1 })
       .lean();
 
@@ -30,6 +33,7 @@ router.get('/painel', ensureAuth, async (req, res, next) => {
       formData: {},
       errors: [],
       success: false,
+      isAdmin,
     });
   } catch (error) {
     next(error);
@@ -48,9 +52,13 @@ router.post(
     const errors = validationResult(req);
     const formData = req.body;
 
+    const isAdmin = req.session.user.role === 'admin';
+
     if (!errors.isEmpty()) {
       try {
-        const requests = await Request.find({ client: req.session.user.id })
+        const query = isAdmin ? {} : { client: req.session.user.id };
+
+        const requests = await Request.find(query)
           .sort({ createdAt: -1 })
           .lean();
 
@@ -73,6 +81,39 @@ router.post(
           formData,
           errors: errors.array(),
           success: false,
+          isAdmin,
+        });
+      } catch (error) {
+        return next(error);
+      }
+    }
+
+    if (isAdmin) {
+      try {
+        const requests = await Request.find({})
+          .sort({ createdAt: -1 })
+          .lean();
+
+        const totals = requests.reduce(
+          (acc, request) => {
+            acc.total += 1;
+            if (request.status === 'Novo') acc.new += 1;
+            if (request.status === 'Em análise') acc.inAnalysis += 1;
+            if (request.status === 'Em progresso') acc.inProgress += 1;
+            if (request.status === 'Concluído') acc.completed += 1;
+            return acc;
+          },
+          { total: 0, new: 0, inAnalysis: 0, inProgress: 0, completed: 0 }
+        );
+
+        return res.status(403).render('dashboard', {
+          title: 'Painel do cliente',
+          requests,
+          totals,
+          formData: {},
+          errors: [{ msg: 'Administradores gerenciam pedidos existentes e não podem criar novos.' }],
+          success: false,
+          isAdmin,
         });
       } catch (error) {
         return next(error);
@@ -113,6 +154,7 @@ router.post(
         formData: {},
         errors: [],
         success: true,
+        isAdmin,
       });
     } catch (error) {
       next(error);
