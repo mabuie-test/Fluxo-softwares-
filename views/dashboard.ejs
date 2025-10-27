@@ -1,0 +1,109 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+    <main class="section dashboard">
+      <div class="container">
+        <div class="dashboard-header">
+          <div>
+            <span class="eyebrow">Olá, <%= currentUser.name %></span>
+            <h1>Gerencie as suas solicitações e acompanhe cada etapa.</h1>
+          </div>
+          <a class="button button-outline" href="/contacto">Abrir um novo projecto estratégico</a>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <p>Total</p>
+            <strong><%= totals.total %></strong>
+          </div>
+          <div class="stat-card">
+            <p>Novas</p>
+            <strong><%= totals.new %></strong>
+          </div>
+          <div class="stat-card">
+            <p>Em análise</p>
+            <strong><%= totals.inAnalysis %></strong>
+          </div>
+          <div class="stat-card">
+            <p>Em progresso</p>
+            <strong><%= totals.inProgress %></strong>
+          </div>
+          <div class="stat-card">
+            <p>Concluídas</p>
+            <strong><%= totals.completed %></strong>
+          </div>
+        </div>
+
+        <div class="dashboard-columns">
+          <section class="dashboard-form">
+            <h2>Novo pedido</h2>
+            <p>Descreva a sua necessidade para activarmos o time ideal.</p>
+            <% if (success) { %>
+            <div class="alert alert-success">Solicitação enviada com sucesso! Iremos contactá-lo em breve.</div>
+            <% } %>
+            <% if (errors.length) { %>
+            <div class="alert alert-error">
+              <ul>
+                <% errors.forEach((error) => { %>
+                <li><%= error.msg %></li>
+                <% }) %>
+              </ul>
+            </div>
+            <% } %>
+            <form action="/solicitacoes" method="post" class="form">
+              <div class="form-group">
+                <label for="serviceInterest">Tipo de projecto</label>
+                <select id="serviceInterest" name="serviceInterest" required>
+                  <option value="">Seleccione</option>
+                  <option value="marketing" <%= formData.serviceInterest === 'marketing' ? 'selected' : '' %>>Campanha de marketing</option>
+                  <option value="web" <%= formData.serviceInterest === 'web' ? 'selected' : '' %>>Website ou sistema web</option>
+                  <option value="app" <%= formData.serviceInterest === 'app' ? 'selected' : '' %>>Aplicação Android</option>
+                  <option value="iot" <%= formData.serviceInterest === 'iot' ? 'selected' : '' %>>IoT / Electrónica</option>
+                  <option value="seguranca" <%= formData.serviceInterest === 'seguranca' ? 'selected' : '' %>>Segurança electrónica</option>
+                  <option value="consultoria" <%= formData.serviceInterest === 'consultoria' ? 'selected' : '' %>>Consultoria</option>
+                  <option value="outro" <%= formData.serviceInterest === 'outro' ? 'selected' : '' %>>Outro</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="details">Detalhes</label>
+                <textarea id="details" name="details" rows="4" required><%= formData.details || '' %></textarea>
+              </div>
+              <div class="form-group">
+                <label for="phone">Telefone para contacto</label>
+                <input type="text" id="phone" name="phone" value="<%= formData.phone || '' %>" />
+              </div>
+              <button type="submit" class="button button-primary">Enviar solicitação</button>
+            </form>
+          </section>
+          <section class="dashboard-list">
+            <h2>Histórico de solicitações</h2>
+            <% if (!requests.length) { %>
+            <p class="empty-state">Ainda não existem solicitações. Crie a primeira para começarmos!</p>
+            <% } else { %>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Detalhes</th>
+                    <th>Status</th>
+                    <th>Enviado em</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% requests.forEach((request) => { %>
+                  <tr>
+                    <td><%= request.serviceInterest %></td>
+                    <td><%= request.details %></td>
+                    <td><span class="status-pill status-<%= request.status.toLowerCase().replace(' ', '-') %>"><%= request.status %></span></td>
+                    <td><%= new Date(request.createdAt).toLocaleDateString('pt-PT') %></td>
+                  </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+            <% } %>
+          </section>
+        </div>
+      </div>
+    </main>
+<%- include('partials/footer') %>
